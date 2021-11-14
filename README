@@ -1,0 +1,56 @@
+The board and discs:
+To start, I decided to look at implementing the board and how I was going to manage it. Each slot of the board is a struct with details on whats in that position,
+ the int position and the char position e.g {B, 4, a}. This would allow me to easily check for occupation of the position as well as easily discerning the
+ position in the format that the user will input i.e a4.
+
+The players:
+The only relevant information I required on the two players would be their names and how many tiles they occupied/score. Thus I created
+a player struct containing this data and created two of these structs, one for black and one for white.
+
+Initialising the game:
+Firstly, start time of the game was documented into the file othello-results.txt. Then player names were acquired and stored in the player structs.
+Afterwards, I initialised the board by looping through the structs and filling in their int position and char position for future use and changed the
+contents of the slots with either '\0', 'w' or 'b'. Since the start board already has 2 'b' and 2 'w' in the centre, I added these. Alongside this, i would
+have to set the player scores to 2 each initially.
+
+Player move:
+After initialising, the first turn comes. Since it was important whos turn it was, I used a tracker to keep note of this and used it when doing checks and
+capturing. With separate code for each player, I first created a function to acquire all the possible moves into an array. This was to keep track of all the
+moves to be printed later but also to ensure there was a possible move and whether a pass was allowable or not.
+
+  Possible moves:
+  Here I would have to loop through every position and check if it was empty. If it was empty, it would check the adjacent positions for discs belonging to the
+  opposing player. And if this was so, it would continue checking the next slot over. In the case of another opposing disc, it would continue checking further.
+  In the case of an empty tile, it would break as a capture would not be possible. And in the case of a disc of same colour as the one being played, it would
+  notify using boolean that the position is allowed. This was done in all 8 directions for each slot and in the end a list of these playable spots were
+  acquired.
+
+After acquiring the playable moves, the user was informed of these and beckoned for a move. I decided to implement it this way as it would be easier for the user
+to know their options. The user input is taken and validated through a function and would loop back to the question if there was an invalid input.
+
+  Validating the move:
+  There was a few checks to be done. If the user input was to pass ("p"), then I'd have to check if the list of available moves acquired beforehand was empty or
+  not. If so, it validated the move. Otherwise, invalidated it. If user input was a position in the form ld, it would loop through the list of available
+  moves and try to match it. If a match was found, the move would be executed through a new function.
+
+  Executing the move:
+  Firstly, the position was filled with a disc and a counter for the change in score was detailed to be carried out later. Taking user input, a check was done
+  in all direction similar to before from that position looking for adjacent spots with opposing discs. If the adjacent positions had opposing
+  discs, a check was done further and in the case of a same coloured disc on the other end, it would loop backwards back to the original position while
+  altering the discs occupying between. This was done for all valid captured from the user input position and the change in score was recorded.
+
+  Otherwise, the user input was invalid and this would be returned so the question would repeat.
+
+After this, the tracker of player turn was changed and a function on whether end conditions have been met is called.
+
+  End conditions:
+  Only in the cases of the board being filled and no more valid moves could end the game. I checked if the total score was 64, if so the result was kept as
+  a variable. This accounted for the full board scenario. To account for no more valid moves, I simply kept a record of passes that have occurred and
+  reset this back to 0 in the case of a move occurring. If 2 passes occur, this meant one player could not make a move and the other could also not make a move.
+  Thus with no change to the board, neither player could make a move. If 2 passes occurred, the result was kept as a variable.
+
+After this, the function would end and be re-called but for the other player until one of the end conditions were met.
+
+Determining winner:
+After the game had ended, the winner was announced and the final board was printed once again. The winner and the score of the game would be documented
+into a text file othello-results.txt.
